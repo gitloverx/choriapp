@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test API Frontend</title></head>
+<body style="padding: 20px; font-family: monospace;">
+    <h2>Diagnóstico de API</h2>
+    <pre id="result" style="background: #eee; padding: 10px; border-radius: 5px; white-space: pre-wrap;">Cargando...</pre>
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) {
+            document.getElementById('result').textContent = '❌ No hay token en localStorage. Debes iniciar sesión primero.';
+        } else {
+            document.getElementById('result').textContent = 'Consultando a la API...';
+            fetch('/api/products', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => res.text().then(text => ({ status: res.status, text })))
+            .then(data => {
+                document.getElementById('result').textContent = 
+                    '✅ TOKEN ENCONTRADO: ' + token.substring(0, 15) + '...\n\n' +
+                    'STATUS HTTP: ' + data.status + '\n\n' +
+                    'RESPUESTA DEL SERVIDOR:\n' + data.text;
+            })
+            .catch(err => {
+                document.getElementById('result').textContent = '❌ Error de red: ' + err.message;
+            });
+        }
+    </script>
+</body>
+</html>
