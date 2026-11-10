@@ -37,7 +37,7 @@ window.switchRole = (role) => {
         document.getElementById(`nav-btn-${r}`).className = "flex flex-col items-center gap-1 text-stone-400 hover:text-stone-700 transition";
     });
     document.getElementById(`view-${role}`).classList.remove('hidden');
-    document.getElementById(`nav-btn-${role}`).className = "flex flex-col items-center gap-1 text-amber-600 transition";
+    document.getElementById(`nav-btn-${role}`).className = "flex flex-col items-center gap-1 text-rose-600 transition";
     document.getElementById('active-role-label').textContent = role.toUpperCase();
     
     if(role === 'cajero') renderMenu();
@@ -46,33 +46,26 @@ window.switchRole = (role) => {
     if(role === 'admin') renderAdmin();
 };
 
-// --- CAJERO (Diseño exacto de la captura 1) ---
+// --- CAJERO (Diseño de la Captura 1) ---
 function renderMenu() {
     const grid = document.getElementById('menu-grid');
     if (!grid) return;
 
-    grid.innerHTML = menuProducts.map(p => {
-        const inCart = currentCart.find(c => c.id === p.id);
-        const qtyBadge = inCart ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full mr-2">${inCart.qty}</span>` : '';
-
-        return `
+    grid.innerHTML = menuProducts.map(p => `
         <div class="bg-white p-2.5 rounded-2xl border border-stone-200 flex justify-between items-center mb-2 shadow-sm">
             <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-xs text-stone-600"><i class="${p.icon || 'fa-solid fa-utensils'}"></i></div>
                 <div>
                     <h4 class="font-bold text-xs text-stone-900">${p.name}</h4>
-                    <p class="text-[10px] text-stone-400">${formatMoney(p.price)}</p>
+                    <p class="text-[10px] text-stone-400 line-clamp-1">${p.description || 'Delicioso'}</p>
                 </div>
             </div>
-            <div class="flex items-center">
-                ${qtyBadge}
-                <button onclick="addToCart(${p.id})" class="w-8 h-8 bg-amber-500 hover:bg-amber-600 text-white rounded-lg flex items-center justify-center shadow-sm active:scale-95 transition">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                </button>
+            <div class="text-right cursor-pointer group" onclick="addToCart(${p.id})">
+                <span class="font-black text-xs text-rose-600">${formatMoney(p.price)}</span>
+                <div class="text-[9px] text-stone-400 font-bold group-hover:text-rose-600 transition">+ Agregar</div>
             </div>
         </div>
-        `;
-    }).join('');
+    `).join('');
 }
 
 window.addToCart = (id) => {
@@ -123,7 +116,7 @@ function renderCart() {
                 <button onclick="updateCartQty(${it.id}, 1)" class="w-6 h-6 bg-stone-100 hover:bg-stone-200 rounded text-stone-600 flex items-center justify-center font-bold">
                     <i class="fa-solid fa-plus text-[10px]"></i>
                 </button>
-                <span class="font-black text-xs text-amber-600 w-14 text-right ml-1">${formatMoney(it.price * it.qty)}</span>
+                <span class="font-black text-xs text-rose-600 w-14 text-right ml-1">${formatMoney(it.price * it.qty)}</span>
             </div>
         </div>`;
     }).join('');
@@ -147,7 +140,7 @@ function renderKitchen() {
     const pending = orders.filter(o => o.status === 'pendiente');
     document.getElementById('kitchen-count').textContent = `${pending.length} pendientes`;
     document.getElementById('kitchen-orders-list').innerHTML = pending.map(o => `
-        <div class="bg-white rounded-2xl p-3 shadow-sm border-l-4 border-amber-500 urgent-pulse mb-2">
+        <div class="bg-white rounded-2xl p-3 shadow-sm border-l-4 border-rose-500 urgent-pulse mb-2">
             <div class="flex justify-between items-center mb-2">
                 <b class="text-sm">#${o.id} - ${o.customer_name}</b>
                 <button onclick="markDone(${o.id})" class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-lg font-bold text-xs">Listo</button>
@@ -220,7 +213,7 @@ async function renderAdmin() {
                         <div class="w-7 h-7 rounded-lg bg-stone-200 text-stone-700 flex items-center justify-center text-[11px] shrink-0"><i class="${p.icon}"></i></div>
                         <div class="min-w-0"><p class="font-bold text-stone-900 truncate">${p.name}</p></div>
                     </div>
-                    <div class="flex items-center gap-1 shrink-0"><span class="font-bold text-amber-600">${formatMoney(p.price)}</span></div>
+                    <div class="flex items-center gap-1 shrink-0"><span class="font-bold text-rose-600">${formatMoney(p.price)}</span></div>
                 </div>
             </div>
         `).join('');
