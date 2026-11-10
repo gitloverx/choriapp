@@ -196,6 +196,6 @@
     </div>
 </div>
 
-<script type="module" src="js/app_final.js
+<script type="module" src="js/app.js?v=<?php echo time(); ?>
 </body>
 </html>

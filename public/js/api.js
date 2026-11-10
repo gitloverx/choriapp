@@ -6,13 +6,20 @@ export async function apiFetch(endpoint, options = {}) {
     if (token) headers['Authorization'] = `Bearer ${token}`;
     
     const res = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
-    const text = await res.text();
     
+    // Si el servidor dice que no estamos autorizados (Token vencido)
+    if (res.status === 401 || res.status === 403) {
+        localStorage.clear();
+        window.location.href = 'login.php';
+        return;
+    }
+
+    const text = await res.text();
     let data;
     try {
         data = JSON.parse(text);
     } catch (e) {
-        throw new Error("Error del servidor (Respuesta no válida)");
+        throw new Error("Respuesta no válida del servidor");
     }
     
     if (!res.ok) {

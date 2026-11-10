@@ -15,10 +15,10 @@ async function init() {
     } catch (e) {
         const dot = document.getElementById('sync-indicator');
         if (dot) {
-            dot.title = 'Error de conexión';
             dot.innerHTML = '<span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>';
         }
-        alert("Error de conexión: " + e.message);
+        // ESTA ALERTA NOS DIRÁ EL ERROR EXACTO
+        alert("❌ ERROR CARGANDO DATOS:\n" + e.message); 
     }
 }
 
@@ -32,7 +32,7 @@ async function loadData() {
 
     const dot = document.getElementById('sync-indicator');
     if (dot) {
-        dot.title = 'Conectado a la nube';
+        dot.title = 'Conectado';
         dot.innerHTML = '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>';
     }
 }
@@ -52,10 +52,11 @@ window.switchRole = (role) => {
     if(role === 'admin') renderAdmin();
 };
 
-// --- CAJERO: MENÚ Y CARRITO ---
 function renderMenu() {
-    document.getElementById('menu-grid').innerHTML = menuProducts.map(p => {
-        // Buscar si ya está en el carrito para mostrar el contador
+    const grid = document.getElementById('menu-grid');
+    if (!grid) return;
+
+    grid.innerHTML = menuProducts.map(p => {
         const inCart = currentCart.find(c => c.id === p.id);
         const qtyBadge = inCart ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full mr-2">${inCart.qty}</span>` : '';
 
@@ -75,7 +76,8 @@ function renderMenu() {
                 </button>
             </div>
         </div>
-    `}).join('');
+        `;
+    }).join('');
 }
 
 window.addToCart = (id) => {
@@ -84,7 +86,7 @@ window.addToCart = (id) => {
     if(ex) ex.qty++; 
     else currentCart.push({ id: prod.id, name: prod.name, price: prod.price, qty: 1 });
     renderCart();
-    renderMenu(); // Actualizar contador en el menú
+    renderMenu();
 };
 
 window.updateCartQty = (id, delta) => {
@@ -94,13 +96,15 @@ window.updateCartQty = (id, delta) => {
         if(it.qty <= 0) currentCart = currentCart.filter(c => c.id !== id);
     }
     renderCart();
-    renderMenu(); // Actualizar contador en el menú
+    renderMenu();
 };
 
 window.clearCart = () => { currentCart = []; renderCart(); renderMenu(); };
 
 function renderCart() {
     const c = document.getElementById('cart-items');
+    if(!c) return;
+    
     if(!currentCart.length) { 
         c.innerHTML = '<p class="text-stone-400 text-xs py-2 text-center">Sin items en el pedido</p>'; 
         document.getElementById('cart-total').textContent = '$0'; 
@@ -143,7 +147,6 @@ window.submitOrder = async () => {
     } catch(e) { alert(e.message); }
 };
 
-// --- COCINA ---
 function renderKitchen() {
     const pending = orders.filter(o => o.status === 'pendiente');
     document.getElementById('kitchen-count').textContent = `${pending.length} pendientes`;
@@ -163,7 +166,6 @@ window.markDone = async (id) => {
     await loadData(); renderKitchen();
 };
 
-// --- INVENTARIO ---
 function renderInventory() {
     document.getElementById('inventory-list').innerHTML = inventory.map(i => `
         <div class="bg-white rounded-xl p-3 flex justify-between items-center border border-stone-200 mb-2">
@@ -191,7 +193,6 @@ window.saveIngredient = async () => {
     } catch(e) { alert(e.message); }
 };
 
-// --- ADMIN ---
 async function renderAdmin() {
     try {
         const stats = await apiFetch('/stats');
