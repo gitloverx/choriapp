@@ -5,13 +5,11 @@ const token = localStorage.getItem('token');
 
 if(!token) window.location.href = 'login.php';
 
-// Función para encender el punto verde
 function conectar() {
     const dot = document.getElementById('sync-indicator');
     if (dot) dot.innerHTML = '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>';
 }
 
-// Función para mostrar error
 function error(msg) {
     const dot = document.getElementById('sync-indicator');
     if (dot) dot.innerHTML = '<span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>';
@@ -115,5 +113,4 @@ function pintarInventario() {
     `).join('');
 }
 
-// Iniciar
 cargar();

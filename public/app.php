@@ -20,7 +20,6 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <!-- Punto verde/rojo -->
             <span id="sync-indicator" class="flex h-2 w-2 relative" title="Conectando...">
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-stone-400"></span>
             </span>
@@ -70,7 +69,6 @@
         <div id="view-inventario" class="hidden space-y-3">
             <div class="flex justify-between items-center px-1">
                 <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Inventario</span>
-                <button onclick="document.getElementById('ingredient-modal').classList.remove('hidden')" class="bg-stone-900 hover:bg-stone-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-plus"></i> Nuevo</button>
             </div>
             <div id="inventory-list" class="space-y-2"></div>
         </div>
@@ -82,10 +80,7 @@
                 <div class="bg-white p-3 rounded-2xl border border-stone-200"><span class="text-[10px] uppercase font-bold text-stone-400">Total Pedidos</span><h3 id="stat-orders" class="text-base font-black mt-1">0</h3></div>
             </div>
             <div class="bg-white rounded-2xl p-3.5 border border-stone-200 space-y-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Productos</span>
-                    <button onclick="document.getElementById('product-modal').classList.remove('hidden')" class="bg-stone-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-plus"></i> Nuevo</button>
-                </div>
+                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Productos</span>
                 <div id="admin-menu-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
             </div>
         </div>
@@ -99,6 +94,6 @@
     </nav>
 </div>
 
-<script type="module" src="js/nuevo_app.js?v=1"></script>
+<script type="module" src="js/nuevo_app.js?v=2"></script>
 </body>
 </html>
