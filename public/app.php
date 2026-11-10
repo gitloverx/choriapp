@@ -21,7 +21,6 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <!-- PUNTITO DE SINCRONIZACIÓN -->
             <span id="sync-indicator" class="flex h-2 w-2 relative" title="Conectando...">
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-stone-400"></span>
             </span>
@@ -179,9 +178,6 @@
                         <option value="fa-solid fa-beer-mug-empty">Cerveza</option>
                         <option value="fa-solid fa-wine-glass">Vino</option>
                         <option value="fa-solid fa-martini-glass-citrus">Cóctel</option>
-                        <option value="fa-solid fa-box">Caja / Para Llevar</option>
-                        <option value="fa-solid fa-shopping-bag">Bolsa</option>
-                        <option value="fa-solid fa-cubes-stacked">Adicional / Extras</option>
                     </select>
                 </div>
             </div>
@@ -196,6 +192,6 @@
     </div>
 </div>
 
-<script type="module" src="js/app.js?v=777999
+<script type="module" src="js/app_test.js?v=9999"></script>
 </body>
 </html>
