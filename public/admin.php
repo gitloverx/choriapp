@@ -14,7 +14,7 @@
             <div class="bg-stone-900 text-white w-9 h-9 rounded-xl flex items-center justify-center"><i class="fa-solid fa-shield-halved"></i></div>
             <div><h1 class="font-black text-sm text-stone-900">SUPER ADMIN</h1><p class="text-[10px] text-stone-400 uppercase tracking-wider font-bold">Panel Global</p></div>
         </div>
-        <button onclick="window.location.href='index.html'" class="text-stone-400 hover:text-rose-600 p-2 text-xs"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+        <button onclick="window.location.href='login.php'" class="text-stone-400 hover:text-rose-600 p-2 text-xs"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
     </header>
     <div class="grid grid-cols-3 gap-3">
         <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-stone-200"><p class="text-[10px] uppercase font-bold text-stone-400">Usuarios</p><h3 id="kpi-users" class="text-xl font-black text-stone-900 mt-1">—</h3></div>
@@ -32,7 +32,7 @@
     // BARRERA DE SEGURIDAD: Si no es admin, lo devuelve al login
     const role = localStorage.getItem('role');
     if (!localStorage.getItem('token') || role !== 'admin') {
-        window.location.href = 'index.html';
+        window.location.href = 'login.php';
     }
 
     async function loadData() {

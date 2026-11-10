@@ -3,17 +3,19 @@ import { apiFetch, logout, formatMoney } from './api.js';
 window.doLogout = logout;
 let menuProducts = [], currentCart = [], orders = [], inventory = [];
 
-// Forzar que se vea el nombre del negocio
 const bName = localStorage.getItem('businessName') || 'Mi Negocio';
 document.getElementById('biz-name').textContent = bName.toUpperCase();
 
 async function init() {
-    if(!localStorage.getItem('token')) {
-        window.location.href = 'index.html';
-        return;
-    }
+    if(!localStorage.getItem('token')) return window.location.href = 'login.php';
     try {
         await loadData();
+        // AUTO-REPARACIÓN: Si el menú está vacío, forzamos la inyección de datos
+        if (menuProducts.length === 0) {
+            console.log("Menú vacío. Inyectando datos por defecto...");
+            await apiFetch('/seed', { method: 'POST' });
+            await loadData(); // Volver a cargar
+        }
         switchRole('cajero');
     } catch (e) {
         alert("Error cargando datos: " + e.message);

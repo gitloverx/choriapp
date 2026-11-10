@@ -13,11 +13,10 @@ export async function apiFetch(endpoint, options = {}) {
         if (!res.ok) throw new Error(data.error || data.detalle_real || 'Error en el servidor');
         return data;
     } catch (e) {
-        console.error("Error del servidor (no es JSON):", text);
-        throw new Error("Error de PHP en el servidor. Revisa Termux.");
+        throw new Error("Error interno del servidor. Intenta de nuevo.");
     }
 }
 
 export function setToken(t) { token = t; localStorage.setItem('token', t); }
-export function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+export function logout() { localStorage.clear(); window.location.href = 'login.php'; }
 export function formatMoney(n) { return '$' + Number(n).toLocaleString('es-CO'); }

@@ -65,9 +65,9 @@
                 
                 // Redirección basada en el ROL
                 if (res.role === 'admin') {
-                    window.location.href = 'admin.html';
+                    window.location.href = 'admin.php';
                 } else {
-                    window.location.href = 'app.html';
+                    window.location.href = 'app.php';
                 }
             } catch (e) {
                 document.getElementById('msg').textContent = e.message;
