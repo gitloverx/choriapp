@@ -12,19 +12,11 @@ class AuthController {
         $db = Database::get();
         try {
             $db->beginTransaction();
-            
-            // 1. Se crea el usuario en Supabase
             $stmt = $db->prepare('INSERT INTO users (email, password_hash, business_name, business_slug, role) VALUES (?, ?, ?, ?, ?) RETURNING id, email, business_name, role');
-            $stmt->execute([
-                $email, 
-                password_hash($b['password'], PASSWORD_BCRYPT), 
-                $b['business_name'], 
-                $b['business_slug'], 
-                $role
-            ]);
+            $stmt->execute([$email, password_hash($b['password'], PASSWORD_BCRYPT), $b['business_name'], $b['business_slug'], $role]);
             $user = $stmt->fetch();
             
-            // 2. LA MAGIA: Se inyectan sus productos e ingredientes automáticamente en Supabase
+            // Inyecta sus productos e ingredientes desde PHP
             DefaultData::seedForUser($db, $user['id']);
             
             $db->commit();
@@ -39,16 +31,20 @@ class AuthController {
     }
 
     public function login(array $params): void {
-        $b = json_decode(file_get_contents('php://input'), true) ?? [];
-        $stmt = Database::get()->prepare('SELECT * FROM users WHERE email = ?');
-        $stmt->execute([trim((string)($b['email'] ?? ''))]);
-        $user = $stmt->fetch();
-        
-        if (!$user || !password_verify($b['password'], $user['password_hash'])) {
-            Response::json(['error' => 'Credenciales inválidas'], 401);
+        try {
+            $b = json_decode(file_get_contents('php://input'), true) ?? [];
+            $stmt = Database::get()->prepare('SELECT * FROM users WHERE email = ?');
+            $stmt->execute([trim((string)($b['email'] ?? ''))]);
+            $user = $stmt->fetch();
+            
+            if (!$user || !password_verify($b['password'], $user['password_hash'])) {
+                Response::json(['error' => 'Correo o contraseña incorrectos'], 401);
+            }
+            
+            $token = Jwt::encode(['id' => $user['id'], 'role' => $user['role'], 'exp' => time() + 7200], getenv('JWT_SECRET'));
+            Response::json(['token' => $token, 'business_name' => $user['business_name'], 'role' => $user['role']]);
+        } catch (\Exception $e) {
+            Response::json(['error' => 'Error interno: ' . $e->getMessage()], 500);
         }
-        
-        $token = Jwt::encode(['id' => $user['id'], 'role' => $user['role'], 'exp' => time() + 7200], getenv('JWT_SECRET'));
-        Response::json(['token' => $token, 'business_name' => $user['business_name'], 'role' => $user['role']]);
     }
 }

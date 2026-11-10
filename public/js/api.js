@@ -8,13 +8,17 @@ export async function apiFetch(endpoint, options = {}) {
     const res = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
     const text = await res.text();
     
+    let data;
     try {
-        const data = JSON.parse(text);
-        if (!res.ok) throw new Error(data.error || data.detalle_real || 'Error en el servidor');
-        return data;
+        data = JSON.parse(text);
     } catch (e) {
-        throw new Error("Error interno del servidor. Intenta de nuevo.");
+        throw new Error("Error del servidor (Respuesta no válida)");
     }
+    
+    if (!res.ok) {
+        throw new Error(data.error || 'Error en el servidor');
+    }
+    return data;
 }
 
 export function setToken(t) { token = t; localStorage.setItem('token', t); }
