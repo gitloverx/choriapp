@@ -39,7 +39,7 @@
     </main>
 
     <script type="module">
-        import { apiFetch, setToken } from './js/api.js';
+        import { apiFetch, setToken } from './js/api.js?v=2';
 
         // Limpiar sesión vieja al cargar la página de login
         localStorage.clear();
