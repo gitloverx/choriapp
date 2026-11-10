@@ -20,7 +20,13 @@
                 <span id="active-role-label" class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Caja</span>
             </div>
         </div>
-        <div class="flex items-center gap-3"><span id="sync-indicator" class="flex h-2 w-2 relative" title="Conectando..."><span class="relative inline-flex rounded-full h-2 w-2 bg-stone-400"></span></span><button onclick="doLogout()" class="text-stone-400 hover:text-rose-600 p-2 text-xs rounded-xl"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+        <div class="flex items-center gap-3">
+            <!-- PUNTITO DE SINCRONIZACIÓN -->
+            <span id="sync-indicator" class="flex h-2 w-2 relative" title="Conectando...">
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-stone-400"></span>
+            </span>
+            <button onclick="doLogout()" class="text-stone-400 hover:text-rose-600 p-2 text-xs rounded-xl"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
     </header>
 
     <main class="flex-1 max-w-md w-full mx-auto p-3 space-y-3">
@@ -139,7 +145,45 @@
             <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Descripción</label><input id="product-modal-desc" type="text" placeholder="Ej: Chorizo + queso" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none"></div>
             <div class="grid grid-cols-2 gap-2">
                 <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Precio</label><input id="product-modal-price" type="number" value="10000" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold text-center focus:outline-none"></div>
-                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Icono</label><select id="product-modal-icon" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-2 py-2 text-sm font-medium focus:outline-none"><option value="fa-solid fa-hotdog">Perro</option><option value="fa-solid fa-utensils">Combo</option><option value="fa-solid fa-bowl-food">Tazón</option><option value="fa-solid fa-cheese">Queso</option><option value="fa-solid fa-burger">Hamburguesa</option><option value="fa-solid fa-pizza-slice">Pizza</option><option value="fa-solid fa-mug-hot">Bebida caliente</option><option value="fa-solid fa-glass-water">Bebida</option></select></div>
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Icono</label>
+                    <select id="product-modal-icon" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-2 py-2 text-sm font-medium focus:outline-none">
+                        <option value="fa-solid fa-hotdog">Perro Caliente</option>
+                        <option value="fa-solid fa-burger">Hamburguesa</option>
+                        <option value="fa-solid fa-pizza-slice">Pizza</option>
+                        <option value="fa-solid fa-taco">Taco</option>
+                        <option value="fa-solid fa-burrito">Burrito</option>
+                        <option value="fa-solid fa-drumstick-bite">Pollo / Alitas</option>
+                        <option value="fa-solid fa-fish">Pescado</option>
+                        <option value="fa-solid fa-bacon">Tocino</option>
+                        <option value="fa-solid fa-egg">Huevos</option>
+                        <option value="fa-solid fa-cheese">Queso</option>
+                        <option value="fa-solid fa-bread-slice">Pan</option>
+                        <option value="fa-solid fa-wheat-awn">Arepa / Masa</option>
+                        <option value="fa-solid fa-bowl-food">Tazón / Ensalada</option>
+                        <option value="fa-solid fa-bowl-rice">Arroz / Combo</option>
+                        <option value="fa-solid fa-utensils">Cubiertos / Combo</option>
+                        <option value="fa-solid fa-chopsticks">Fideos / Ramen</option>
+                        <option value="fa-solid fa-pepper-hot">Picante / Salsas</option>
+                        <option value="fa-solid fa-carrot">Verduras</option>
+                        <option value="fa-solid fa-apple-whole">Frutas</option>
+                        <option value="fa-solid fa-lemon">Cítricos / Limón</option>
+                        <option value="fa-solid fa-ice-cream">Helado</option>
+                        <option value="fa-solid fa-cookie">Galletas</option>
+                        <option value="fa-solid fa-cake-candles">Pastel / Postre</option>
+                        <option value="fa-solid fa-candy-cane">Dulces</option>
+                        <option value="fa-solid fa-mug-hot">Café / Té</option>
+                        <option value="fa-solid fa-mug-saucer">Bebida Caliente</option>
+                        <option value="fa-solid fa-glass-water">Vaso de Agua / Jugo</option>
+                        <option value="fa-solid fa-bottle-water">Botella / Gaseosa</option>
+                        <option value="fa-solid fa-beer-mug-empty">Cerveza</option>
+                        <option value="fa-solid fa-wine-glass">Vino</option>
+                        <option value="fa-solid fa-martini-glass-citrus">Cóctel</option>
+                        <option value="fa-solid fa-box">Caja / Para Llevar</option>
+                        <option value="fa-solid fa-shopping-bag">Bolsa</option>
+                        <option value="fa-solid fa-cubes-stacked">Adicional / Extras</option>
+                    </select>
+                </div>
             </div>
             <div>
                 <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Receta (Ingredientes)</label>
@@ -152,7 +196,6 @@
     </div>
 </div>
 
-<!-- Al llamar al script, le agregamos un número de versión aleatorio para romper la caché -->
 <script type="module" src="js/app.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
