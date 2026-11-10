@@ -107,21 +107,12 @@
     </nav>
 </div>
 
-<!-- MODAL GENÉRICO -->
-<div id="custom-modal" class="fixed inset-0 bg-stone-900/40 backdrop-blur-xs z-[60] hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-5 max-w-xs w-full shadow-xl space-y-3 text-center border border-stone-100">
-        <h3 id="modal-title" class="font-bold text-stone-900 text-sm">Aviso</h3>
-        <p id="modal-message" class="text-xs text-stone-500">Mensaje</p>
-        <button onclick="document.getElementById('custom-modal').classList.add('hidden')" class="w-full bg-stone-900 text-white font-bold py-2.5 rounded-xl text-xs">Aceptar</button>
-    </div>
-</div>
-
 <!-- MODAL INGREDIENTE -->
 <div id="ingredient-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden overflow-y-auto">
     <div class="min-h-full flex items-start justify-center p-3 py-6">
         <div class="bg-white rounded-2xl p-4 max-w-md w-full shadow-xl space-y-3 border border-stone-100">
             <div class="flex justify-between items-center border-b border-stone-100 pb-2">
-                <h3 id="ingredient-modal-title" class="font-bold text-stone-900 text-sm">Nuevo Ingrediente</h3>
+                <h3 class="font-bold text-stone-900 text-sm">Nuevo Ingrediente</h3>
                 <button onclick="document.getElementById('ingredient-modal').classList.add('hidden')" class="text-stone-400 hover:text-rose-600 p-1 text-sm"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Nombre</label><input id="ingredient-modal-name" type="text" placeholder="Ej: Chorizo" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-amber-600"></div>
@@ -161,6 +152,7 @@
     </div>
 </div>
 
-<script type="module" src="js/app_v1000.js
+<!-- Al llamar al script, le agregamos un número de versión aleatorio para romper la caché -->
+<script type="module" src="js/app.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
