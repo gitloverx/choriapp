@@ -6,7 +6,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>tailwind.config={theme:{extend:{colors:{brand:{600:'#d4a017'}},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
     <style>body{-webkit-tap-highlight-color:transparent;touch-action:manipulation} @keyframes urgentPulse{0%,100%{box-shadow:0 0 0 0 rgba(225,29,72,.7)}50%{box-shadow:0 0 0 4px rgba(225,29,72,0)}} .urgent-pulse{animation:urgentPulse 1.5s infinite}</style>
 </head>
 <body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex flex-col pb-20 select-none">
@@ -151,20 +150,36 @@
                         <option value="fa-solid fa-burger">Hamburguesa</option>
                         <option value="fa-solid fa-pizza-slice">Pizza</option>
                         <option value="fa-solid fa-taco">Taco</option>
+                        <option value="fa-solid fa-burrito">Burrito</option>
                         <option value="fa-solid fa-drumstick-bite">Pollo / Alitas</option>
                         <option value="fa-solid fa-fish">Pescado</option>
+                        <option value="fa-solid fa-bacon">Tocino</option>
+                        <option value="fa-solid fa-egg">Huevos</option>
                         <option value="fa-solid fa-cheese">Queso</option>
                         <option value="fa-solid fa-bread-slice">Pan</option>
-                        <option value="fa-solid fa-bowl-food">Tazón</option>
-                        <option value="fa-solid fa-utensils">Cubiertos</option>
-                        <option value="fa-solid fa-pepper-hot">Picante</option>
+                        <option value="fa-solid fa-wheat-awn">Arepa / Masa</option>
+                        <option value="fa-solid fa-bowl-food">Tazón / Ensalada</option>
+                        <option value="fa-solid fa-bowl-rice">Arroz / Combo</option>
+                        <option value="fa-solid fa-utensils">Cubiertos / Combo</option>
+                        <option value="fa-solid fa-chopsticks">Fideos / Ramen</option>
+                        <option value="fa-solid fa-pepper-hot">Picante / Salsas</option>
+                        <option value="fa-solid fa-carrot">Verduras</option>
+                        <option value="fa-solid fa-apple-whole">Frutas</option>
+                        <option value="fa-solid fa-lemon">Cítricos / Limón</option>
                         <option value="fa-solid fa-ice-cream">Helado</option>
                         <option value="fa-solid fa-cookie">Galletas</option>
-                        <option value="fa-solid fa-cake-candles">Pastel</option>
+                        <option value="fa-solid fa-cake-candles">Pastel / Postre</option>
+                        <option value="fa-solid fa-candy-cane">Dulces</option>
                         <option value="fa-solid fa-mug-hot">Café / Té</option>
-                        <option value="fa-solid fa-glass-water">Jugo / Agua</option>
-                        <option value="fa-solid fa-bottle-water">Gaseosa</option>
+                        <option value="fa-solid fa-mug-saucer">Bebida Caliente</option>
+                        <option value="fa-solid fa-glass-water">Vaso de Agua / Jugo</option>
+                        <option value="fa-solid fa-bottle-water">Botella / Gaseosa</option>
                         <option value="fa-solid fa-beer-mug-empty">Cerveza</option>
+                        <option value="fa-solid fa-wine-glass">Vino</option>
+                        <option value="fa-solid fa-martini-glass-citrus">Cóctel</option>
+                        <option value="fa-solid fa-box">Caja / Para Llevar</option>
+                        <option value="fa-solid fa-shopping-bag">Bolsa</option>
+                        <option value="fa-solid fa-cubes-stacked">Adicional / Extras</option>
                     </select>
                 </div>
             </div>
@@ -179,6 +194,6 @@
     </div>
 </div>
 
-<script type="module" src="js/app_diseno.js?v=1"></script>
+<script type="module" src="js/app_pro.js?v=1"></script>
 </body>
 </html>
