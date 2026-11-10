@@ -6,7 +6,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>body{-webkit-tap-highlight-color:transparent;touch-action:manipulation}</style>
+    <script>tailwind.config={theme:{extend:{colors:{brand:{600:'#d4a017'}},fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+    <style>body{-webkit-tap-highlight-color:transparent;touch-action:manipulation} @keyframes urgentPulse{0%,100%{box-shadow:0 0 0 0 rgba(225,29,72,.7)}50%{box-shadow:0 0 0 4px rgba(225,29,72,0)}} .urgent-pulse{animation:urgentPulse 1.5s infinite}</style>
 </head>
 <body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex flex-col pb-20 select-none">
 
@@ -23,7 +24,7 @@
             <span id="sync-indicator" class="flex h-2 w-2 relative" title="Conectando...">
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-stone-400"></span>
             </span>
-            <button onclick="localStorage.clear(); window.location.href='login.php'" class="text-stone-400 hover:text-rose-600 p-2 text-xs rounded-xl"><i class="fa-solid fa-right-from-bracket"></i></button>
+            <button onclick="doLogout()" class="text-stone-400 hover:text-rose-600 p-2 text-xs rounded-xl"><i class="fa-solid fa-right-from-bracket"></i></button>
         </div>
     </header>
 
@@ -50,7 +51,7 @@
                     <span class="text-[11px] text-stone-500 uppercase font-bold">Total:</span>
                     <span id="cart-total" class="text-amber-600 font-black text-base">$0</span>
                 </div>
-                <button onclick="submitOrder()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-3 rounded-xl text-xs shadow-xs transition flex items-center justify-center gap-2">
+                <button onclick="submitOrder()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-3 rounded-xl text-xs shadow-xs active:scale-[0.98] transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-check text-xs"></i> Enviar a Cocina
                 </button>
             </div>
@@ -69,6 +70,7 @@
         <div id="view-inventario" class="hidden space-y-3">
             <div class="flex justify-between items-center px-1">
                 <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Inventario</span>
+                <button onclick="openIngredientModal()" class="bg-stone-900 hover:bg-stone-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-plus"></i> Nuevo ingrediente</button>
             </div>
             <div id="inventory-list" class="space-y-2"></div>
         </div>
@@ -76,24 +78,107 @@
         <!-- ADMIN -->
         <div id="view-admin" class="hidden space-y-3">
             <div class="grid grid-cols-2 gap-2.5">
-                <div class="bg-white p-3 rounded-2xl border border-stone-200"><span class="text-[10px] uppercase font-bold text-stone-400">Ventas Totales</span><h3 id="stat-sales" class="text-base font-black mt-1">$0</h3></div>
-                <div class="bg-white p-3 rounded-2xl border border-stone-200"><span class="text-[10px] uppercase font-bold text-stone-400">Total Pedidos</span><h3 id="stat-orders" class="text-base font-black mt-1">0</h3></div>
+                <div class="bg-white p-3 rounded-2xl shadow-xs border border-stone-200"><span class="text-[10px] uppercase font-bold text-stone-400">Ventas Totales</span><h3 id="stat-sales" class="text-base font-black text-stone-900 mt-1">$0</h3></div>
+                <div class="bg-white p-3 rounded-2xl shadow-xs border border-stone-200"><span class="text-[10px] uppercase font-bold text-stone-400">Total Pedidos</span><h3 id="stat-orders" class="text-base font-black text-stone-900 mt-1">0</h3></div>
             </div>
-            <div class="bg-white rounded-2xl p-3.5 border border-stone-200 space-y-2">
-                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Productos</span>
+            
+            <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-stone-200 space-y-3">
+                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Estadísticas de Ventas</span>
+                <div>
+                    <p class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-1"><i class="fa-solid fa-arrow-trend-up"></i> Más vendidos</p>
+                    <div id="stats-top-products" class="space-y-1"></div>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-rose-600 uppercase tracking-wider mb-1"><i class="fa-solid fa-arrow-trend-down"></i> Menos vendidos</p>
+                    <div id="stats-bottom-products" class="space-y-1"></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-stone-200 space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Productos</span>
+                    <button onclick="openProductModal()" class="bg-stone-900 hover:bg-stone-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-plus"></i> Nuevo producto</button>
+                </div>
                 <div id="admin-menu-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
             </div>
         </div>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 py-2 px-3 flex justify-around items-center z-40 max-w-md mx-auto">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 py-2 px-3 flex justify-around items-center z-40 max-w-md mx-auto">
         <button onclick="switchRole('cajero')" id="nav-btn-cajero" class="flex flex-col items-center gap-1 text-amber-600 transition"><i class="fa-solid fa-cash-register text-base"></i><span class="text-[10px] font-bold">Caja</span></button>
-        <button onclick="switchRole('cocinero')" id="nav-btn-cocinero" class="flex flex-col items-center gap-1 text-stone-400 transition"><i class="fa-solid fa-fire-burner text-base"></i><span class="text-[10px] font-bold">Cocina</span></button>
-        <button onclick="switchRole('inventario')" id="nav-btn-inventario" class="flex flex-col items-center gap-1 text-stone-400 transition"><i class="fa-solid fa-boxes-stacked text-base"></i><span class="text-[10px] font-bold">Inventario</span></button>
-        <button onclick="switchRole('admin')" id="nav-btn-admin" class="flex flex-col items-center gap-1 text-stone-400 transition"><i class="fa-solid fa-chart-pie text-base"></i><span class="text-[10px] font-bold">Admin</span></button>
+        <button onclick="switchRole('cocinero')" id="nav-btn-cocinero" class="flex flex-col items-center gap-1 text-stone-400 hover:text-stone-700 transition"><i class="fa-solid fa-fire-burner text-base"></i><span class="text-[10px] font-bold">Cocina</span></button>
+        <button onclick="switchRole('inventario')" id="nav-btn-inventario" class="flex flex-col items-center gap-1 text-stone-400 hover:text-stone-700 transition"><i class="fa-solid fa-boxes-stacked text-base"></i><span class="text-[10px] font-bold">Inventario</span></button>
+        <button onclick="switchRole('admin')" id="nav-btn-admin" class="flex flex-col items-center gap-1 text-stone-400 hover:text-stone-700 transition"><i class="fa-solid fa-chart-pie text-base"></i><span class="text-[10px] font-bold">Admin</span></button>
     </nav>
 </div>
 
-<script type="module" src="js/nuevo_app.js?v=2"></script>
+<!-- MODAL INGREDIENTE -->
+<div id="ingredient-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden overflow-y-auto">
+    <div class="min-h-full flex items-start justify-center p-3 py-6">
+        <div class="bg-white rounded-2xl p-4 max-w-md w-full shadow-xl space-y-3 border border-stone-100">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h3 class="font-bold text-stone-900 text-sm">Nuevo Ingrediente</h3>
+                <button onclick="document.getElementById('ingredient-modal').classList.add('hidden')" class="text-stone-400 hover:text-rose-600 p-1 text-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Nombre</label><input id="ingredient-modal-name" type="text" placeholder="Ej: Chorizo" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-amber-600"></div>
+            <div class="grid grid-cols-2 gap-2">
+                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Stock</label><input id="ingredient-modal-stock" type="number" value="0" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold text-center focus:outline-none"></div>
+                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Unidad</label><select id="ingredient-modal-unit" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none"><option value="und">unidades</option><option value="porc">porciones</option><option value="kg">kg</option><option value="g">g</option><option value="L">L</option><option value="ml">ml</option><option value="paq">paquete</option></select></div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="saveIngredient()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 rounded-xl text-xs">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PRODUCTO -->
+<div id="product-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden overflow-y-auto">
+    <div class="min-h-full flex items-start justify-center p-3 py-6">
+        <div class="bg-white rounded-2xl p-4 max-w-md w-full shadow-xl space-y-3 border border-stone-100">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h3 class="font-bold text-stone-900 text-sm">Nuevo Producto</h3>
+                <button onclick="document.getElementById('product-modal').classList.add('hidden')" class="text-stone-400 hover:text-rose-600 p-1 text-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Nombre</label><input id="product-modal-name" type="text" placeholder="Ej: ESPECIAL" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold uppercase focus:outline-none focus:border-amber-600"></div>
+            <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Descripción</label><input id="product-modal-desc" type="text" placeholder="Ej: Chorizo + queso" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none"></div>
+            <div class="grid grid-cols-2 gap-2">
+                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Precio</label><input id="product-modal-price" type="number" value="10000" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold text-center focus:outline-none"></div>
+                <div>
+                    <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Icono</label>
+                    <select id="product-modal-icon" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-2 py-2 text-sm font-medium focus:outline-none">
+                        <option value="fa-solid fa-hotdog">Perro Caliente</option>
+                        <option value="fa-solid fa-burger">Hamburguesa</option>
+                        <option value="fa-solid fa-pizza-slice">Pizza</option>
+                        <option value="fa-solid fa-taco">Taco</option>
+                        <option value="fa-solid fa-drumstick-bite">Pollo / Alitas</option>
+                        <option value="fa-solid fa-fish">Pescado</option>
+                        <option value="fa-solid fa-cheese">Queso</option>
+                        <option value="fa-solid fa-bread-slice">Pan</option>
+                        <option value="fa-solid fa-bowl-food">Tazón</option>
+                        <option value="fa-solid fa-utensils">Cubiertos</option>
+                        <option value="fa-solid fa-pepper-hot">Picante</option>
+                        <option value="fa-solid fa-ice-cream">Helado</option>
+                        <option value="fa-solid fa-cookie">Galletas</option>
+                        <option value="fa-solid fa-cake-candles">Pastel</option>
+                        <option value="fa-solid fa-mug-hot">Café / Té</option>
+                        <option value="fa-solid fa-glass-water">Jugo / Agua</option>
+                        <option value="fa-solid fa-bottle-water">Gaseosa</option>
+                        <option value="fa-solid fa-beer-mug-empty">Cerveza</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Receta (Ingredientes)</label>
+                <div id="product-modal-recipe" class="space-y-1.5 bg-stone-50 rounded-xl p-2 border border-stone-100 max-h-52 overflow-y-auto mt-1"></div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="saveProduct()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 rounded-xl text-xs">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="js/app_diseno.js?v=1"></script>
 </body>
 </html>
