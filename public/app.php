@@ -196,6 +196,6 @@
     </div>
 </div>
 
-<script type="module" src="js/app.js?v=2000
+<script type="module" src="js/app_final.js
 </body>
 </html>
