@@ -1,16 +1,17 @@
 <?php
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 
-// Si piden la raíz, muestra el archivo index.html (tu diseño)
+// Si el usuario entra a la raíz, lo enviamos al login
 if ($path === '/') {
-    readfile(__DIR__ . '/index.html');
-    return true;
+    header('Location: /login.php');
+    exit;
 }
 
-// Si piden un archivo estático (css, js, imágenes), déjalo pasar
-if (is_file(__DIR__ . $path)) {
-    return false; 
+// Si es un archivo real (app.php, js/app.js, css, etc.), lo servimos
+$file = __DIR__ . $path;
+if (is_file($file)) {
+    return false;
 }
 
-// Todo lo que empiece por /api/ va al backend (index.php)
+// Cualquier otra cosa va al enrutador de la API
 require __DIR__ . '/index.php';
