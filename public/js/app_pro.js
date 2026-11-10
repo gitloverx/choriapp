@@ -3,7 +3,7 @@ import { apiFetch, logout, formatMoney } from './api.js';
 window.doLogout = logout;
 let menuProducts = [], currentCart = [], orders = [], inventory = [];
 
-const bName = localStorage.getItem('businessName') || 'Mi Negocio';
+const bName = localStorage.getItem('businessName') || 'MiPuestico';
 const bTitle = document.getElementById('biz-name');
 if(bTitle) bTitle.textContent = bName.toUpperCase();
 

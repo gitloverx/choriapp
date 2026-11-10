@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAN AL CHORI - App</title>
+    <title>MiPuestico - App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,9 +14,9 @@
 <div id="main-app" class="flex-1 flex flex-col">
     <header class="bg-white border-b border-stone-200 sticky top-0 z-40 px-4 py-3 flex justify-between items-center">
         <div class="flex items-center gap-2">
-            <div class="bg-rose-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm shadow-sm shadow-rose-600/30"><i class="fa-solid fa-hotdog"></i></div>
+            <div class="bg-rose-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm shadow-sm shadow-rose-600/30"><i class="fa-solid fa-shop"></i></div>
             <div>
-                <h1 id="biz-name" class="font-black text-xs tracking-tight text-stone-900 leading-none">PAN AL CHORI</h1>
+                <h1 id="biz-name" class="font-black text-xs tracking-tight text-stone-900 leading-none">MiPuestico</h1>
                 <span id="active-role-label" class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Caja</span>
             </div>
         </div>
@@ -159,7 +159,7 @@
                 <div>
                     <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Icono</label>
                     <select id="product-modal-icon" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-2 py-2 text-sm font-medium focus:outline-none">
-                        <option value="fa-solid fa-hotdog">Perro Caliente</option>
+                        <option value="fa-solid fa-shop">Perro Caliente</option>
                         <option value="fa-solid fa-burger">Hamburguesa</option>
                         <option value="fa-solid fa-pizza-slice">Pizza</option>
                         <option value="fa-solid fa-taco">Taco</option>

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAN AL CHORI - Acceso</title>
+    <title>MiPuestico - Acceso</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -10,9 +10,9 @@
 <body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex flex-col">
     <main class="flex-1 flex flex-col items-center justify-center px-6 py-10">
         <div class="w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 text-white rounded-3xl flex items-center justify-center text-4xl mb-5 shadow-2xl">
-            <i class="fa-solid fa-hotdog"></i>
+            <i class="fa-solid fa-shop"></i>
         </div>
-        <h1 class="font-black text-3xl text-stone-900 tracking-tight text-center">PAN AL CHORI</h1>
+        <h1 class="font-black text-3xl text-stone-900 tracking-tight text-center">MiPuestico</h1>
         <p class="text-sm text-stone-500 text-center mt-2 max-w-xs">El sistema para tu puesto de comida.</p>
 
         <div class="w-full max-w-sm mt-8 bg-white p-6 rounded-3xl shadow-xl border border-stone-200">
