@@ -16,7 +16,7 @@
         <div class="flex items-center gap-2">
             <div class="bg-amber-500 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm"><i class="fa-solid fa-hotdog"></i></div>
             <div>
-                <h1 class="font-black text-xs tracking-tight text-stone-900 leading-none">PAN AL CHORI</h1>
+                <h1 id="biz-name" class="font-black text-xs tracking-tight text-stone-900 leading-none">PAN AL CHORI</h1>
                 <span id="active-role-label" class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Caja</span>
             </div>
         </div>
@@ -65,6 +65,7 @@
         <div id="view-inventario" class="hidden space-y-3">
             <div class="flex justify-between items-center px-1">
                 <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Inventario</span>
+                <button onclick="openIngredientModal()" class="bg-stone-900 hover:bg-stone-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-plus"></i> Nuevo ingrediente</button>
             </div>
             <div id="inventory-list" class="space-y-2"></div>
         </div>
@@ -74,6 +75,26 @@
             <div class="grid grid-cols-2 gap-2.5">
                 <div class="bg-white p-3 rounded-2xl shadow-xs border border-stone-200"><span class="text-[10px] uppercase font-bold text-stone-400">Ventas Totales</span><h3 id="stat-sales" class="text-base font-black text-stone-900 mt-1">$0</h3></div>
                 <div class="bg-white p-3 rounded-2xl shadow-xs border border-stone-200"><span class="text-[10px] uppercase font-bold text-stone-400">Total Pedidos</span><h3 id="stat-orders" class="text-base font-black text-stone-900 mt-1">0</h3></div>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-stone-200 space-y-3">
+                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Estadísticas de Ventas</span>
+                <div>
+                    <p class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-1"><i class="fa-solid fa-arrow-trend-up"></i> Más vendidos</p>
+                    <div id="stats-top-products" class="space-y-1"></div>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-rose-600 uppercase tracking-wider mb-1"><i class="fa-solid fa-arrow-trend-down"></i> Menos vendidos</p>
+                    <div id="stats-bottom-products" class="space-y-1"></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-stone-200 space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Productos</span>
+                    <button onclick="openProductModal()" class="bg-stone-900 hover:bg-stone-800 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-plus"></i> Nuevo producto</button>
+                </div>
+                <div id="admin-menu-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
             </div>
         </div>
     </main>
@@ -86,6 +107,60 @@
     </nav>
 </div>
 
-<script type="module" src="js/app.js?v=100?v=2"></script>
+<!-- MODAL GENÉRICO -->
+<div id="custom-modal" class="fixed inset-0 bg-stone-900/40 backdrop-blur-xs z-[60] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-5 max-w-xs w-full shadow-xl space-y-3 text-center border border-stone-100">
+        <h3 id="modal-title" class="font-bold text-stone-900 text-sm">Aviso</h3>
+        <p id="modal-message" class="text-xs text-stone-500">Mensaje</p>
+        <button onclick="document.getElementById('custom-modal').classList.add('hidden')" class="w-full bg-stone-900 text-white font-bold py-2.5 rounded-xl text-xs">Aceptar</button>
+    </div>
+</div>
+
+<!-- MODAL INGREDIENTE -->
+<div id="ingredient-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden overflow-y-auto">
+    <div class="min-h-full flex items-start justify-center p-3 py-6">
+        <div class="bg-white rounded-2xl p-4 max-w-md w-full shadow-xl space-y-3 border border-stone-100">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h3 id="ingredient-modal-title" class="font-bold text-stone-900 text-sm">Nuevo Ingrediente</h3>
+                <button onclick="document.getElementById('ingredient-modal').classList.add('hidden')" class="text-stone-400 hover:text-rose-600 p-1 text-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Nombre</label><input id="ingredient-modal-name" type="text" placeholder="Ej: Chorizo" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-amber-600"></div>
+            <div class="grid grid-cols-2 gap-2">
+                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Stock</label><input id="ingredient-modal-stock" type="number" value="0" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold text-center focus:outline-none"></div>
+                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Unidad</label><select id="ingredient-modal-unit" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none"><option value="und">unidades</option><option value="porc">porciones</option><option value="kg">kg</option><option value="g">g</option><option value="L">L</option><option value="ml">ml</option><option value="paq">paquete</option></select></div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="saveIngredient()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 rounded-xl text-xs">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PRODUCTO -->
+<div id="product-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden overflow-y-auto">
+    <div class="min-h-full flex items-start justify-center p-3 py-6">
+        <div class="bg-white rounded-2xl p-4 max-w-md w-full shadow-xl space-y-3 border border-stone-100">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h3 class="font-bold text-stone-900 text-sm">Nuevo Producto</h3>
+                <button onclick="document.getElementById('product-modal').classList.add('hidden')" class="text-stone-400 hover:text-rose-600 p-1 text-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Nombre</label><input id="product-modal-name" type="text" placeholder="Ej: ESPECIAL" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold uppercase focus:outline-none focus:border-amber-600"></div>
+            <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Descripción</label><input id="product-modal-desc" type="text" placeholder="Ej: Chorizo + queso" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none"></div>
+            <div class="grid grid-cols-2 gap-2">
+                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Precio</label><input id="product-modal-price" type="number" value="10000" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-sm font-bold text-center focus:outline-none"></div>
+                <div><label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Icono</label><select id="product-modal-icon" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-2 py-2 text-sm font-medium focus:outline-none"><option value="fa-solid fa-hotdog">Perro</option><option value="fa-solid fa-utensils">Combo</option><option value="fa-solid fa-bowl-food">Tazón</option><option value="fa-solid fa-cheese">Queso</option><option value="fa-solid fa-burger">Hamburguesa</option><option value="fa-solid fa-pizza-slice">Pizza</option><option value="fa-solid fa-mug-hot">Bebida caliente</option><option value="fa-solid fa-glass-water">Bebida</option></select></div>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Receta (Ingredientes)</label>
+                <div id="product-modal-recipe" class="space-y-1.5 bg-stone-50 rounded-xl p-2 border border-stone-100 max-h-52 overflow-y-auto mt-1"></div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="saveProduct()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 rounded-xl text-xs">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="js/app_v1000.js
 </body>
 </html>
