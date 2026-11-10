@@ -13,6 +13,12 @@ async function init() {
         await loadData();
         switchRole('cajero');
     } catch (e) {
+        // Poner el punto en rojo si falla la conexión
+        const dot = document.getElementById('sync-indicator');
+        if (dot) {
+            dot.title = 'Error de conexión';
+            dot.innerHTML = '<span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>';
+        }
         alert("Error de conexión: " + e.message);
     }
 }
@@ -24,6 +30,13 @@ async function loadData() {
         apiFetch('/inventory')
     ]);
     menuProducts = p; orders = o; inventory = i;
+
+    // ¡AQUÍ ENCENDEMOS EL PUNTO VERDE! Si llegó hasta aquí, la conexión fue exitosa.
+    const dot = document.getElementById('sync-indicator');
+    if (dot) {
+        dot.title = 'Conectado a la nube';
+        dot.innerHTML = '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>';
+    }
 }
 
 window.switchRole = (role) => {
@@ -111,12 +124,99 @@ function renderInventory() {
     `).join('');
 }
 
+window.openIngredientModal = () => {
+    document.getElementById('ingredient-modal-name').value = '';
+    document.getElementById('ingredient-modal-stock').value = 0;
+    document.getElementById('ingredient-modal').classList.remove('hidden');
+};
+
+window.saveIngredient = async () => {
+    const name = document.getElementById('ingredient-modal-name').value;
+    const stock = parseInt(document.getElementById('ingredient-modal-stock').value);
+    const unit = document.getElementById('ingredient-modal-unit').value;
+    if(!name) return alert('Escribe un nombre');
+    
+    try {
+        await apiFetch('/inventory', { method: 'POST', body: JSON.stringify({ name, stock, unit }) });
+        document.getElementById('ingredient-modal').classList.add('hidden');
+        await loadData(); renderInventory();
+    } catch(e) { alert(e.message); }
+};
+
 async function renderAdmin() {
     try {
         const stats = await apiFetch('/stats');
         document.getElementById('stat-sales').textContent = formatMoney(stats.total_sales);
         document.getElementById('stat-orders').textContent = stats.total_orders;
+        
+        const tops = stats.top_products || [];
+        const top3 = tops.slice(0, 3);
+        const bot3 = tops.slice(-3).reverse();
+
+        document.getElementById('stats-top-products').innerHTML = top3.length ? top3.map((p, i) => `
+            <div class="flex justify-between items-center bg-emerald-50 p-2 rounded-lg text-xs border border-emerald-100">
+                <span class="font-semibold text-emerald-800">${i+1}. ${p.product_name}</span>
+                <span class="font-bold text-emerald-700">${p.total_qty} und</span>
+            </div>`).join('') : '<p class="text-stone-400 text-xs py-1 text-center">Sin ventas aún.</p>';
+
+        document.getElementById('stats-bottom-products').innerHTML = bot3.length ? bot3.map((p, i) => `
+            <div class="flex justify-between items-center bg-rose-50 p-2 rounded-lg text-xs border border-rose-100">
+                <span class="font-semibold text-rose-800">${i+1}. ${p.product_name}</span>
+                <span class="font-bold text-rose-700">${p.total_qty} und</span>
+            </div>`).join('') : '<p class="text-stone-400 text-xs py-1 text-center">Sin ventas aún.</p>';
+            
+        document.getElementById('admin-menu-list').innerHTML = menuProducts.map(p => `
+            <div class="bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-100 mb-1">
+                <div class="flex justify-between items-center gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <div class="w-7 h-7 rounded-lg bg-stone-200 text-stone-700 flex items-center justify-center text-[11px] shrink-0"><i class="${p.icon}"></i></div>
+                        <div class="min-w-0"><p class="font-bold text-stone-900 truncate">${p.name}</p></div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0"><span class="font-bold text-amber-600">${formatMoney(p.price)}</span></div>
+                </div>
+            </div>
+        `).join('');
     } catch(e) { console.error(e); }
 }
+
+window.openProductModal = () => {
+    document.getElementById('product-modal-name').value = '';
+    document.getElementById('product-modal-desc').value = '';
+    document.getElementById('product-modal-price').value = 10000;
+    
+    document.getElementById('product-modal-recipe').innerHTML = inventory.map(ing => `
+        <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-stone-200">
+            <span class="text-xs font-semibold text-stone-700 truncate">${ing.name}</span>
+            <div class="flex items-center gap-1">
+                <input type="number" min="0" value="0" data-ingid="${ing.id}" class="recipe-qty w-16 text-center text-xs font-bold bg-stone-50 border border-stone-200 rounded-lg py-1">
+                <span class="text-[10px] text-stone-400 w-8">${ing.unit}</span>
+            </div>
+        </div>
+    `).join('');
+
+    document.getElementById('product-modal').classList.remove('hidden');
+};
+
+window.saveProduct = async () => {
+    const name = document.getElementById('product-modal-name').value.toUpperCase();
+    const desc = document.getElementById('product-modal-desc').value;
+    const price = parseInt(document.getElementById('product-modal-price').value);
+    const icon = document.getElementById('product-modal-icon').value;
+    
+    if(!name || price <= 0) return alert('Nombre y precio válido son obligatorios');
+
+    const recipe = [];
+    document.querySelectorAll('.recipe-qty').forEach(input => {
+        const qty = parseInt(input.value);
+        if(qty > 0) recipe.push({ ingredient_id: parseInt(input.dataset.ingid), qty: qty });
+    });
+
+    try {
+        await apiFetch('/products', { method: 'POST', body: JSON.stringify({ name, description: desc, price, icon, recipe }) });
+        document.getElementById('product-modal').classList.add('hidden');
+        await loadData(); renderAdmin();
+        alert('Producto creado exitosamente');
+    } catch(e) { alert(e.message); }
+};
 
 init();

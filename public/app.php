@@ -20,7 +20,7 @@
                 <span id="active-role-label" class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Caja</span>
             </div>
         </div>
-        <button onclick="doLogout()" class="text-stone-400 hover:text-rose-600 p-2 text-xs rounded-xl"><i class="fa-solid fa-right-from-bracket"></i></button>
+        <div class="flex items-center gap-3"><span id="sync-indicator" class="flex h-2 w-2 relative" title="Conectando..."><span class="relative inline-flex rounded-full h-2 w-2 bg-stone-400"></span></span><button onclick="doLogout()" class="text-stone-400 hover:text-rose-600 p-2 text-xs rounded-xl"><i class="fa-solid fa-right-from-bracket"></i></button></div>
     </header>
 
     <main class="flex-1 max-w-md w-full mx-auto p-3 space-y-3">
