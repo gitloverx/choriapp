@@ -7,7 +7,6 @@ export async function apiFetch(endpoint, options = {}) {
     
     const res = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
     
-    // Si el servidor dice que no estamos autorizados (Token vencido)
     if (res.status === 401 || res.status === 403) {
         localStorage.clear();
         window.location.href = 'login.php';
@@ -15,17 +14,13 @@ export async function apiFetch(endpoint, options = {}) {
     }
 
     const text = await res.text();
-    let data;
     try {
-        data = JSON.parse(text);
+        const data = JSON.parse(text);
+        if (!res.ok) throw new Error(data.error || 'Error en el servidor');
+        return data;
     } catch (e) {
-        throw new Error("Respuesta no válida del servidor");
+        throw new Error("El servidor devolvió un error (no es JSON)");
     }
-    
-    if (!res.ok) {
-        throw new Error(data.error || 'Error en el servidor');
-    }
-    return data;
 }
 
 export function setToken(t) { token = t; localStorage.setItem('token', t); }

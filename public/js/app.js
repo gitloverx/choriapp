@@ -3,33 +3,37 @@ import { apiFetch, logout, formatMoney } from './api.js';
 window.doLogout = logout;
 let menuProducts = [], currentCart = [], orders = [], inventory = [];
 
+// Mostrar nombre del negocio
 const bName = localStorage.getItem('businessName') || 'Mi Negocio';
 const bTitle = document.getElementById('biz-name');
 if(bTitle) bTitle.textContent = bName.toUpperCase();
 
 async function init() {
     if(!localStorage.getItem('token')) return window.location.href = 'login.php';
+    
     try {
         await loadData();
+        // AUTO-REPARACIÓN: Si el menú está vacío, forzamos la inyección de datos
+        if (menuProducts.length === 0) {
+            console.log("Menú vacío. Inyectando datos...");
+            await apiFetch('/seed', { method: 'POST' });
+            await loadData(); 
+        }
         switchRole('cajero');
     } catch (e) {
         const dot = document.getElementById('sync-indicator');
-        if (dot) {
-            dot.innerHTML = '<span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>';
-        }
-        // ESTA ALERTA NOS DIRÁ EL ERROR EXACTO
-        alert("❌ ERROR CARGANDO DATOS:\n" + e.message); 
+        if (dot) dot.innerHTML = '<span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>';
+        alert("Error al cargar la app:\n" + e.message);
     }
 }
 
 async function loadData() {
-    const [p, o, i] = await Promise.all([
-        apiFetch('/products'), 
-        apiFetch('/orders'), 
-        apiFetch('/inventory')
-    ]);
+    const p = await apiFetch('/products');
+    const o = await apiFetch('/orders');
+    const i = await apiFetch('/inventory');
     menuProducts = p; orders = o; inventory = i;
 
+    // Encender punto verde
     const dot = document.getElementById('sync-indicator');
     if (dot) {
         dot.title = 'Conectado';
@@ -52,6 +56,7 @@ window.switchRole = (role) => {
     if(role === 'admin') renderAdmin();
 };
 
+// --- CAJERO ---
 function renderMenu() {
     const grid = document.getElementById('menu-grid');
     if (!grid) return;
@@ -147,6 +152,7 @@ window.submitOrder = async () => {
     } catch(e) { alert(e.message); }
 };
 
+// --- COCINA ---
 function renderKitchen() {
     const pending = orders.filter(o => o.status === 'pendiente');
     document.getElementById('kitchen-count').textContent = `${pending.length} pendientes`;
@@ -166,6 +172,7 @@ window.markDone = async (id) => {
     await loadData(); renderKitchen();
 };
 
+// --- INVENTARIO ---
 function renderInventory() {
     document.getElementById('inventory-list').innerHTML = inventory.map(i => `
         <div class="bg-white rounded-xl p-3 flex justify-between items-center border border-stone-200 mb-2">
@@ -193,6 +200,7 @@ window.saveIngredient = async () => {
     } catch(e) { alert(e.message); }
 };
 
+// --- ADMIN ---
 async function renderAdmin() {
     try {
         const stats = await apiFetch('/stats');
