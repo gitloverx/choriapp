@@ -13,7 +13,6 @@ async function init() {
         await loadData();
         switchRole('cajero');
     } catch (e) {
-        // Poner el punto en rojo si falla la conexión
         const dot = document.getElementById('sync-indicator');
         if (dot) {
             dot.title = 'Error de conexión';
@@ -31,7 +30,6 @@ async function loadData() {
     ]);
     menuProducts = p; orders = o; inventory = i;
 
-    // ¡AQUÍ ENCENDEMOS EL PUNTO VERDE! Si llegó hasta aquí, la conexión fue exitosa.
     const dot = document.getElementById('sync-indicator');
     if (dot) {
         dot.title = 'Conectado a la nube';
@@ -54,35 +52,83 @@ window.switchRole = (role) => {
     if(role === 'admin') renderAdmin();
 };
 
+// --- CAJERO: MENÚ Y CARRITO ---
 function renderMenu() {
-    document.getElementById('menu-grid').innerHTML = menuProducts.map(p => `
-        <div onclick="addToCart(${p.id})" class="bg-white p-2.5 rounded-2xl border border-stone-200 active:scale-[0.99] cursor-pointer flex justify-between items-center mb-2">
+    document.getElementById('menu-grid').innerHTML = menuProducts.map(p => {
+        // Buscar si ya está en el carrito para mostrar el contador
+        const inCart = currentCart.find(c => c.id === p.id);
+        const qtyBadge = inCart ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full mr-2">${inCart.qty}</span>` : '';
+
+        return `
+        <div class="bg-white p-2.5 rounded-2xl border border-stone-200 flex justify-between items-center mb-2 shadow-sm">
             <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-xs"><i class="${p.icon || 'fa-solid fa-utensils'}"></i></div>
-                <div><h4 class="font-bold text-xs">${p.name}</h4><p class="text-[10px] text-stone-400">${p.description||''}</p></div>
+                <div class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-xs text-stone-600"><i class="${p.icon || 'fa-solid fa-utensils'}"></i></div>
+                <div>
+                    <h4 class="font-bold text-xs text-stone-900">${p.name}</h4>
+                    <p class="text-[10px] text-stone-400">${formatMoney(p.price)}</p>
+                </div>
             </div>
-            <div class="text-right"><span class="font-black text-xs text-amber-600">${formatMoney(p.price)}</span></div>
+            <div class="flex items-center">
+                ${qtyBadge}
+                <button onclick="addToCart(${p.id})" class="w-8 h-8 bg-amber-500 hover:bg-amber-600 text-white rounded-lg flex items-center justify-center shadow-sm active:scale-95 transition">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+            </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 window.addToCart = (id) => {
     const prod = menuProducts.find(p => p.id === id);
     const ex = currentCart.find(c => c.id === id);
-    if(ex) ex.qty++; else currentCart.push({ id: prod.id, name: prod.name, price: prod.price, qty: 1 });
+    if(ex) ex.qty++; 
+    else currentCart.push({ id: prod.id, name: prod.name, price: prod.price, qty: 1 });
     renderCart();
+    renderMenu(); // Actualizar contador en el menú
 };
 
-window.clearCart = () => { currentCart = []; renderCart(); };
+window.updateCartQty = (id, delta) => {
+    const it = currentCart.find(c => c.id === id);
+    if(it) {
+        it.qty += delta;
+        if(it.qty <= 0) currentCart = currentCart.filter(c => c.id !== id);
+    }
+    renderCart();
+    renderMenu(); // Actualizar contador en el menú
+};
+
+window.clearCart = () => { currentCart = []; renderCart(); renderMenu(); };
 
 function renderCart() {
     const c = document.getElementById('cart-items');
-    if(!currentCart.length) { c.innerHTML = '<p class="text-stone-400 text-xs text-center py-2">Sin items</p>'; document.getElementById('cart-total').textContent = '$0'; return; }
+    if(!currentCart.length) { 
+        c.innerHTML = '<p class="text-stone-400 text-xs py-2 text-center">Sin items en el pedido</p>'; 
+        document.getElementById('cart-total').textContent = '$0'; 
+        return; 
+    }
+    
     let total = 0;
     c.innerHTML = currentCart.map(it => {
         total += it.price * it.qty;
-        return `<div class="flex justify-between py-1"><span>${it.name} (x${it.qty})</span><span>${formatMoney(it.price * it.qty)}</span></div>`;
+        return `
+        <div class="flex justify-between items-center py-2 border-b border-stone-100 last:border-0">
+            <div class="flex-1 min-w-0 pr-2">
+                <p class="font-bold text-xs text-stone-800 truncate">${it.name}</p>
+                <p class="text-[10px] text-stone-500">${formatMoney(it.price)} c/u</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="updateCartQty(${it.id}, -1)" class="w-6 h-6 bg-stone-100 hover:bg-stone-200 rounded text-stone-600 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-minus text-[10px]"></i>
+                </button>
+                <span class="text-xs font-bold w-4 text-center">${it.qty}</span>
+                <button onclick="updateCartQty(${it.id}, 1)" class="w-6 h-6 bg-stone-100 hover:bg-stone-200 rounded text-stone-600 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-plus text-[10px]"></i>
+                </button>
+                <span class="font-black text-xs text-amber-600 w-14 text-right ml-1">${formatMoney(it.price * it.qty)}</span>
+            </div>
+        </div>`;
     }).join('');
+    
     document.getElementById('cart-total').textContent = formatMoney(total);
 }
 
@@ -97,6 +143,7 @@ window.submitOrder = async () => {
     } catch(e) { alert(e.message); }
 };
 
+// --- COCINA ---
 function renderKitchen() {
     const pending = orders.filter(o => o.status === 'pendiente');
     document.getElementById('kitchen-count').textContent = `${pending.length} pendientes`;
@@ -116,6 +163,7 @@ window.markDone = async (id) => {
     await loadData(); renderKitchen();
 };
 
+// --- INVENTARIO ---
 function renderInventory() {
     document.getElementById('inventory-list').innerHTML = inventory.map(i => `
         <div class="bg-white rounded-xl p-3 flex justify-between items-center border border-stone-200 mb-2">
@@ -143,6 +191,7 @@ window.saveIngredient = async () => {
     } catch(e) { alert(e.message); }
 };
 
+// --- ADMIN ---
 async function renderAdmin() {
     try {
         const stats = await apiFetch('/stats');
