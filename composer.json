@@ -1,0 +1,7 @@
+{
+    "name": "choriapp/backend",
+    "description": "Backend PHP para Pan al Chori",
+    "require": {
+        "php": ">=8.0"
+    }
+}
